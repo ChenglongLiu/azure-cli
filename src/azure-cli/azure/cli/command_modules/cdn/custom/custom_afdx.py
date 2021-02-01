@@ -550,7 +550,8 @@ def update_afd_security_policy(client: SecurityPoliciesOperations,
                     patterns_to_match=["/*"])] if domain_ids is not None else existing.parameters.associations
     )
 
-    return client.create(resource_group_name,
+    # patch, no update
+    return client.patch(resource_group_name,
                          profile_name,
                          security_policy_name,
                          parameters=parameters)
