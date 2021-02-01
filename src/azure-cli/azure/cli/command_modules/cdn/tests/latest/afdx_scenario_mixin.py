@@ -144,11 +144,11 @@ class CdnAfdScenarioMixin:
         return self.cmd(command, checks, expect_failure=expect_failure)
 
     def afd_secret_show_cmd(self, resource_group_name, profile_name, secret_name, checks=None):
-        command = f'cdn afd-secret show -g {resource_group_name} --profile-name {profile_name} --secret-name {secret_name} '
+        command = f'cdn afd-secret show -g {resource_group_name} --profile-name {profile_name} --secret-name {secret_name}'
         return self.cmd(command, checks)
 
     def afd_secret_delete_cmd(self, resource_group_name, profile_name, secret_name, checks=None):
-        command = f'cdn afd-secret delete -g {resource_group_name} --profile-name {profile_name} --secret-name {secret_name}'
+        command = f'cdn afd-secret delete -g {resource_group_name} --profile-name {profile_name} --secret-name {secret_name} --yes'
         return self.cmd(command, checks)
         
     def afd_custom_domain_create_cmd(self, resource_group_name, profile_name, custom_domain_name, host_name, certificate_type, minimum_tls_version, azure_dns_zone=None, secret=None, checks=None):
@@ -170,5 +170,31 @@ class CdnAfdScenarioMixin:
         return self.cmd(command, checks)
 
     def afd_custom_domain_delete_cmd(self, resource_group_name, profile_name, custom_domain_name, checks=None):
-        command = f'cdn afd-custom-domain delete -g {resource_group_name} --profile-name {profile_name} --custom-domain-name {custom_domain_name} '
+        command = f'cdn afd-custom-domain delete -g {resource_group_name} --profile-name {profile_name} --custom-domain-name {custom_domain_name} --yes'
+        return self.cmd(command, checks)
+
+    def afd_security_policy_create_cmd(self, resource_group_name, profile_name, security_policy_name, domain_ids, waf_policy_id, checks=None):
+        cmd = f'cdn afd-security-policy create -g {resource_group_name} --profile-name {profile_name} --security-policy-name {security_policy_name} --waf-policy-id {waf_policy_id}'
+        if domain_ids:
+            cmd += " --domain-ids " + " ".join(["'{}'".format(domain_id) for domain_id in domain_ids])
+
+        return self.cmd(cmd, checks)
+
+    def afd_security_policy_update_cmd(self, resource_group_name, profile_name, security_policy_name, domain_ids, waf_policy_id, checks=None):
+        cmd = f'cdn afd-security-policy update -g {resource_group_name} --profile-name {profile_name} --security-policy-name {security_policy_name} --waf-policy-id {waf_policy_id}'
+        if domain_ids:
+            cmd += " --domain-ids " + " ".join(["'{}'".format(domain_id) for domain_id in domain_ids])
+
+        return self.cmd(cmd, checks)
+
+    def afd_security_policy_list_cmd(self, resource_group_name, profile_name, checks=None, expect_failure=False):
+        command = f'cdn afd-security-policy list -g {resource_group_name} --profile-name {profile_name}'
+        return self.cmd(command, checks, expect_failure=expect_failure)
+
+    def afd_security_policy_show_cmd(self, resource_group_name, profile_name, security_policy_name, checks=None):
+        command = f'cdn afd-security-policy show -g {resource_group_name} --profile-name {profile_name} --security-policy-name {security_policy_name}'
+        return self.cmd(command, checks)
+
+    def afd_security_policy_delete_cmd(self, resource_group_name, profile_name, security_policy_name, checks=None):
+        command = f'cdn afd-security-policy delete -g {resource_group_name} --profile-name {profile_name} --security-policy-name {security_policy_name} --yes'
         return self.cmd(command, checks)
